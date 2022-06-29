@@ -20,7 +20,7 @@ from dataset import Dataset
 from evaluate import evaluate
 import sys
 sys.path.append("vocoder")
-from models.hifigan import Generator
+from vocoder.models.hifigan import Generator
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
