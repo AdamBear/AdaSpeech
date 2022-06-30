@@ -8,6 +8,9 @@ from text.symbols import symbols
 _symbol_to_id = {s: i for i, s in enumerate(symbols)}
 _id_to_symbol = {i: s for i, s in enumerate(symbols)}
 
+# Regular expression matching text enclosed in curly braces:
+_curly_re = re.compile(r"(.*?)\{(.+?)\}(.*)")
+
 
 def text_to_sequence(text, cleaner_names):
     """Converts a string of text to a sequence of IDs corresponding to the symbols in the text.
@@ -22,10 +25,18 @@ def text_to_sequence(text, cleaner_names):
     Returns:
       List of integers corresponding to the symbols in the text
     """
+    sequence = []
 
     # Check for curly braces and treat their contents as ARPAbet:
-    text = _clean_text(text, cleaner_names)
-    sequence = [_symbol_to_id[phone] for phone in text]
+    while len(text):
+        m = _curly_re.match(text)
+
+        if not m:
+            sequence += _symbols_to_sequence(_clean_text(text, cleaner_names))
+            break
+        sequence += _symbols_to_sequence(_clean_text(m.group(1), cleaner_names))
+        sequence += _arpabet_to_sequence(m.group(2))
+        text = m.group(3)
 
     return sequence
 
