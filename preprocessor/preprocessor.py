@@ -333,7 +333,7 @@ class Preprocessor:
 
         return min_value, max_value
 
-    def average_mel_by_duration(x: torch.Tensor, d: torch.Tensor) -> torch.Tensor:
+    def average_mel_by_duration(self, x: torch.Tensor, d: torch.Tensor) -> torch.Tensor:
         # print(d.sum(), len(x))
         if d.sum() != x.shape[-1]:
             d[-1] += 1
