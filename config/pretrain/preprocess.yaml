@@ -1,14 +1,14 @@
 dataset: "AISHELL3"
 
 path:
-  raw_path: "./raw_data"
+  raw_path: "/data/datasets/data_aishell3/train"
   preprocessed_path: "./preprocessed_data"
 
 preprocessing:
   val_size: 50
   text:
     text_cleaners: ["basic_cleaners"]
-    language: "vi"
+    language: "wav"
   audio:
     sampling_rate: 22050
     max_wav_value: 32768.0
