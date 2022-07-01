@@ -66,4 +66,4 @@ max_seq_len: 1000
 
 vocoder:
   model: "HiFi-GAN" # support 'HiFi-GAN', 'MelGAN'
-  speaker: "universal" # support  'LJSpeech', 'universal'
+  speaker: "AISHELL3_22k" # support  'LJSpeech', 'universal'

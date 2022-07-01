@@ -18,19 +18,58 @@ from g2p_en import G2p
 import audio as Audio
 
 sys.path.append("vocoder")
-from models.hifigan import Generator
+from vocoder.models.hifigan import Generator
+import vocoder.models.hifigan as hifigan
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 vocoder_checkpoint_path = "data/g_02519517"
 vocoder_config = "data/config_22k.json"
 
-def get_vocoder(config, checkpoint_path):
-    config = json.load(open(config, 'r', encoding='utf-8'))
-    config = AttrDict(config)
-    checkpoint_dict = torch.load(checkpoint_path, map_location="cpu")
-    vocoder = Generator(config).to(device).eval()
-    vocoder.load_state_dict(checkpoint_dict['generator'])
+# def get_vocoder(config, checkpoint_path):
+#     config = json.load(open(config, 'r', encoding='utf-8'))
+#     config = AttrDict(config)
+#     checkpoint_dict = torch.load(checkpoint_path, map_location="cpu")
+#     vocoder = Generator(config).to(device).eval()
+#     vocoder.load_state_dict(checkpoint_dict['generator'])
+#     vocoder.remove_weight_norm()
+#
+#     return vocoder
+
+def get_vocoder(config, device):
+    name = config["vocoder"]["model"]
+    speaker = config["vocoder"]["speaker"]
+
+    if name == "MelGAN":
+        if speaker == "LJSpeech":
+            vocoder = torch.hub.load(
+                "descriptinc/melgan-neurips", "load_melgan", "linda_johnson"
+            )
+        elif speaker == "universal":
+            vocoder = torch.hub.load(
+                "descriptinc/melgan-neurips", "load_melgan", "multi_speaker"
+            )
+        vocoder.mel2wav.eval()
+        vocoder.mel2wav.to(device)
+    elif name == "HiFi-GAN":
+        if speaker.split('_')[1] == '22k':
+            with open("vocoder/config/config_22k.json", "r") as f:
+                config = json.load(f)
+        elif speaker.split('_')[1] == '16k':
+            with open("vocoder/config/config_16k.json", "r") as f:
+                config = json.load(f)
+
+        config = hifigan.AttrDict(config)
+        vocoder = hifigan.Generator(config)
+
+        if speaker == "LibriTTS_22k":
+            ckpt = torch.load("vocoder/pretrained/generator_universal.pth.tar")
+        elif speaker == "AISHELL3_22k":
+            ckpt = torch.load("vocoder/pretrained/generator_aishell3.pth.tar")
+
+    vocoder.load_state_dict(ckpt["generator"])
+    vocoder.eval()
     vocoder.remove_weight_norm()
+    vocoder.to(device)
 
     return vocoder
 
