@@ -69,7 +69,11 @@ class Preprocessor:
         speakers = {}
         num_spk = 0
         for id_language, language in enumerate(tqdm(os.listdir(self.in_dir))):
+            if not os.path.isdir(language):
+                continue
             for speaker in tqdm(os.listdir(os.path.join(self.in_dir, language))):
+                if not os.path.isdir(speaker):
+                    continue
                 speakers[speaker] = num_spk
                 num_spk += 1
                 for wav_name in os.listdir(os.path.join(self.in_dir,language, speaker)):
