@@ -333,13 +333,24 @@ class Preprocessor:
 
         return min_value, max_value
 
-    def average_mel_by_duration(self, mel, duration):
-        if duration.sum() != mel.shape[-1]:
-            duration[-1] += 1
-        d_cumsum = F.pad(duration.cumsum(dim=0), (1, 0))
+    def average_mel_by_duration(x: torch.Tensor, d: torch.Tensor) -> torch.Tensor:
+        # print(d.sum(), len(x))
+        if d.sum() != x.shape[-1]:
+            d[-1] += 1
+        d_cumsum = F.pad(d.cumsum(dim=0), (1, 0))
         x_avg = [
-                np.sum(mel[:, int(start):int(end)], axis=1)//np.array(end - start) if len(mel[:, int(start):int(end)]) != 0 else mel.zeros()
-                for start, end in zip(d_cumsum[:-1], d_cumsum[1:])
-            ]
-        x_avg = torch.from_numpy(np.array(x_avg))
-        return x_avg
+            x[:, int(start):int(end)].sum(dim=1) // (end - start) if len(x[:, int(start):int(end)]) != 0 else x.zeros()
+            for start, end in zip(d_cumsum[:-1], d_cumsum[1:])
+        ]
+        return torch.stack(x_avg)
+
+    # def average_mel_by_duration(self, mel, duration):
+    #     if duration.sum() != mel.shape[-1]:
+    #         duration[-1] += 1
+    #     d_cumsum = F.pad(duration.cumsum(dim=0), (1, 0))
+    #     x_avg = [
+    #             np.sum(mel[:, int(start):int(end)], axis=1)//np.array(end - start) if len(mel[:, int(start):int(end)]) != 0 else mel.zeros()
+    #             for start, end in zip(d_cumsum[:-1], d_cumsum[1:])
+    #         ]
+    #     x_avg = torch.from_numpy(np.array(x_avg))
+    #     return x_avg
