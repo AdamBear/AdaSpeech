@@ -335,6 +335,7 @@ class Preprocessor:
 
     def average_mel_by_duration(self, x: torch.Tensor, d: torch.Tensor) -> torch.Tensor:
         # print(d.sum(), len(x))
+        x = torch.from_numpy(np.array(x))
         if d.sum() != x.shape[-1]:
             d[-1] += 1
         d_cumsum = F.pad(d.cumsum(dim=0), (1, 0))
