@@ -2,7 +2,7 @@ dataset: "AISHELL3"
 
 path:
   raw_path: "/data/datasets/data_aishell3/train"
-  preprocessed_path: "./preprocessed_data"
+  preprocessed_path: "/data/preprocessed_data"
 
 preprocessing:
   val_size: 50
