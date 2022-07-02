@@ -5,7 +5,7 @@ import torch
 import numpy as np
 
 from model import AdaSpeech, ScheduledOptim
-import vocoder.models.hifigan as hifigan
+
 
 def get_model(args, configs, device, train=False):
     (preprocess_config, model_config, train_config) = configs

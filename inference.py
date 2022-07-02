@@ -19,7 +19,7 @@ import audio as Audio
 
 sys.path.append("vocoder")
 from vocoder.models.hifigan import Generator
-import vocoder.models.hifigan as hifigan
+
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 vocoder_checkpoint_path = "data/g_02519517"
