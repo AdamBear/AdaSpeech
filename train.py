@@ -21,18 +21,21 @@ from evaluate import evaluate
 import sys
 sys.path.append("vocoder")
 from vocoder.models.hifigan import Generator
+from utils.model import get_vocoder
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-def get_vocoder(config, checkpoint_path):
-    config = json.load(open(config, 'r', encoding='utf-8'))
-    config = AttrDict(config)
-    checkpoint_dict = torch.load(checkpoint_path, map_location="cpu")
-    vocoder = Generator(config).to(device).eval()
-    vocoder.load_state_dict(checkpoint_dict['generator'])
-    vocoder.remove_weight_norm()
+# def get_vocoder(config, checkpoint_path):
+#     config = json.load(open(config, 'r', encoding='utf-8'))
+#     config = AttrDict(config)
+#     checkpoint_dict = torch.load(checkpoint_path, map_location="cpu")
+#     vocoder = Generator(config).to(device).eval()
+#     vocoder.load_state_dict(checkpoint_dict['generator'])
+#     vocoder.remove_weight_norm()
+#
+#     return vocoder
 
-    return vocoder
+
 
 def main(args, configs):
     print("Prepare training ...")
@@ -61,8 +64,8 @@ def main(args, configs):
     print("Number of AdaSpeech Parameters:", num_param)
 
     # Load vocoder
-    #vocoder = get_vocoder(model_config, device)
-    vocoder = get_vocoder(args.vocoder_config, args.vocoder_checkpoint)
+    vocoder = get_vocoder(model_config, device)
+    #vocoder = get_vocoder(args.vocoder_config, args.vocoder_checkpoint)
 
     # Init logger
     for p in train_config["path"].values():
