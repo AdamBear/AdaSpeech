@@ -52,10 +52,10 @@ def get_vocoder(config, device):
         vocoder.mel2wav.to(device)
     elif name == "HiFi-GAN":
         if speaker.split('_')[1] == '22k':
-            with open("vocoder/config/config_22k.json", "r") as f:
+            with open("hifigan/config_22k.json", "r") as f:
                 config = json.load(f)
         elif speaker.split('_')[1] == '16k':
-            with open("vocoder/config/config_16k.json", "r") as f:
+            with open("hifigan/config_16k.json", "r") as f:
                 config = json.load(f)
 
         config = hifigan.AttrDict(config)

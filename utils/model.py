@@ -82,18 +82,25 @@ def get_vocoder(config, device):
         vocoder.mel2wav.eval()
         vocoder.mel2wav.to(device)
     elif name == "HiFi-GAN":
-        with open("hifigan/config.json", "r") as f:
-            config = json.load(f)
+        if speaker.split('_')[1] == '22k':
+            with open("hifigan/config_22k.json", "r") as f:
+                config = json.load(f)
+        elif speaker.split('_')[1] == '16k':
+            with open("hifigan/config_16k.json", "r") as f:
+                config = json.load(f)
+
         config = hifigan.AttrDict(config)
         vocoder = hifigan.Generator(config)
-        if speaker == "LJSpeech":
-            ckpt = torch.load("hifigan/generator_LJSpeech.pth.tar")
-        elif speaker == "universal":
-            ckpt = torch.load("hifigan/generator_universal.pth.tar")
-        vocoder.load_state_dict(ckpt["generator"])
-        vocoder.eval()
-        vocoder.remove_weight_norm()
-        vocoder.to(device)
+
+        if speaker == "LibriTTS_22k":
+            ckpt = torch.load("hifigan/pretrained/generator_universal.pth.tar")
+        elif speaker == "AISHELL3_22k":
+            ckpt = torch.load("hifigan/pretrained/generator_aishell3.pth.tar")
+
+    vocoder.load_state_dict(ckpt["generator"])
+    vocoder.eval()
+    vocoder.remove_weight_norm()
+    vocoder.to(device)
 
     return vocoder
 
