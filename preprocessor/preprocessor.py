@@ -92,7 +92,7 @@ class Preprocessor:
                             info, pitch, energy, n = ret
                         out.append(info)
                     else:
-                        info, pitch, energy, n = 0, 0, 0, 0
+                        info, pitch, energy, n = None, [], [], 0
                         print("not found textgrid file：" + tg_path)
 
                     if len(pitch) > 0:
