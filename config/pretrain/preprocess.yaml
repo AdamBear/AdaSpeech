@@ -1,6 +1,8 @@
 dataset: "AISHELL3"
 
 path:
+  #raw_path: "f:/datasets/data_aishell3/train"
+  #preprocessed_path: "f:/preprocessed_data"
   raw_path: "/data/datasets/data_aishell3/train"
   preprocessed_path: "/data/preprocessed_data"
 

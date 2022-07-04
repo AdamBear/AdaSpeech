@@ -22,6 +22,7 @@ import sys
 sys.path.append("vocoder")
 from vocoder.models.hifigan import Generator
 from utils.model import get_vocoder
+import math
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -117,6 +118,9 @@ def main(args, configs):
 
                 # Backward
                 total_loss = total_loss / grad_acc_step
+                if math.isnan(total_loss):
+                    print("step:" + str(step))
+
                 total_loss.backward()
                 if step % grad_acc_step == 0:
                     # Clipping gradients to avoid gradient explosion

@@ -36,7 +36,12 @@ class Dataset(Dataset):
         speaker_id = self.speaker_map[speaker]
         raw_text = self.raw_text[idx]
         language_id = self.lang_id[idx]
-        phone = np.array(text_to_sequence(self.text[idx], self.cleaners))
+
+        if self.language == "wav":
+            phone = self.preprocess_pinyin(raw_text)
+        else:
+            phone = np.array(text_to_sequence(self.text[idx], self.cleaners))
+
         mel_path = os.path.join(
             self.preprocessed_path,
             "mel",
