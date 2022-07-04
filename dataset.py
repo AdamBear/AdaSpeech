@@ -18,7 +18,7 @@ class Dataset(Dataset):
         self.preprocessed_path = preprocess_config["path"]["preprocessed_path"]
         self.cleaners = preprocess_config["preprocessing"]["text"]["text_cleaners"]
         self.batch_size = train_config["optimizer"]["batch_size"]
-
+        self.language = preprocess_config["preprocessing"]["text"]["language"]
         self.basename, self.speaker, self.text, self.raw_text, self.lang_id = self.process_meta(
             filename
         )
@@ -27,6 +27,7 @@ class Dataset(Dataset):
         self.sort = sort
         self.drop_last = drop_last
         self.count = 0
+
     def __len__(self):
         return len(self.text)
 
@@ -106,6 +107,23 @@ class Dataset(Dataset):
                 raw_text.append(r)
                 lang_id.append(int(l))
             return name, speaker, text, raw_text, lang_id
+
+    def preprocess_pinyin(self, text):
+
+        phones = []
+        pinyins = text.split(' ')
+        for p in pinyins:
+            if p in self.lexicon:
+                phones += self.lexicon[p]
+            else:
+                phones.append("sp")
+
+        phones = "{" + " ".join(phones) + "}"
+        sequence = np.array(
+            text_to_sequence(phones, [])
+        )
+
+        return np.array(sequence)
 
     def reprocess(self, data, idxs):
         ids = [data[idx]["id"] for idx in idxs]
