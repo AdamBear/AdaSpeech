@@ -5,6 +5,7 @@ path:
   #preprocessed_path: "f:/preprocessed_data"
   raw_path: "/data/datasets/data_aishell3/train"
   preprocessed_path: "/data/preprocessed_data"
+  lexicon_path: "pinyin-lexicon-r.txt"
 
 preprocessing:
   val_size: 50

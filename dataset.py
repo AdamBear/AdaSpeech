@@ -1,13 +1,25 @@
 import json
 import math
 from operator import sub
-import os
+import os, re
 
 import numpy as np
 from torch.utils.data import Dataset
 
 from text import text_to_sequence
 from utils.tools import pad_1D, pad_2D
+
+
+def read_lexicon(lex_path):
+    lexicon = {}
+    with open(lex_path) as f:
+        for line in f:
+            temp = re.split(r"\s+", line.strip("\n"))
+            word = temp[0]
+            phones = temp[1:]
+            if word.lower() not in lexicon:
+                lexicon[word.lower()] = phones
+    return lexicon
 
 
 class Dataset(Dataset):
@@ -22,6 +34,7 @@ class Dataset(Dataset):
         self.basename, self.speaker, self.text, self.raw_text, self.lang_id = self.process_meta(
             filename
         )
+        self.lexicon = read_lexicon(preprocess_config["path"]["lexicon_path"])
         with open(os.path.join(self.preprocessed_path, "speakers.json")) as f:
             self.speaker_map = json.load(f)
         self.sort = sort
