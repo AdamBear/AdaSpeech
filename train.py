@@ -119,8 +119,8 @@ def main(args, configs):
                 # Backward
                 total_loss = total_loss / grad_acc_step
                 if math.isnan(total_loss):
-                    print("step:" + str(step))
-
+                    print("Loss nan at step {}".format(step))
+                    continue
                 total_loss.backward()
                 if step % grad_acc_step == 0:
                     # Clipping gradients to avoid gradient explosion
