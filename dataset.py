@@ -52,7 +52,7 @@ class Dataset(Dataset):
         language_id = self.lang_id[idx]
 
         if self.language == "wav":
-            phone = self.preprocess_pinyin(raw_text)
+            phone = self.preprocess_pinyin(self.text[idx])
         else:
             phone = np.array(text_to_sequence(self.text[idx], self.cleaners))
 
